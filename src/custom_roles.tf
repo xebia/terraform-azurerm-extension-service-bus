@@ -1,4 +1,6 @@
 resource "azurerm_role_definition" "service_bus_namespace_manager" {
+  provider = azurerm.servicebus
+
   name        = var.service_bus_namespace_manager_group_name
   scope       = var.service_bus_namespace_resource_id
   description = "Custom role to manage Service Bus Namespace entities."
@@ -17,6 +19,8 @@ resource "azurerm_role_definition" "service_bus_namespace_manager" {
 }
 
 resource "azurerm_role_definition" "service_bus_namespace_reader" {
+  provider = azurerm.servicebus
+
   name        = var.service_bus_namespace_reader_group_name
   scope       = var.service_bus_namespace_resource_id
   description = "Custom role for read-only access to Service Bus Namespace."

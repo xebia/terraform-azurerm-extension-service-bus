@@ -20,12 +20,16 @@ resource "azuread_group_member" "entity_contributor_group_membership_spoke_contr
 }
 
 resource "azurerm_role_assignment" "entity_contributor_group_service_bus_namespace_sender" {
+  provider = azurerm.servicebus
+
   principal_id         = azuread_group.entity_contributor_group.object_id
   role_definition_name = "Azure Service Bus Data Sender"
   scope                = var.service_bus_namespace_resource_id
 }
 
 resource "azurerm_role_assignment" "entity_contributor_group_service_bus_namespace_receiver" {
+  provider = azurerm.servicebus
+
   principal_id         = azuread_group.entity_contributor_group.object_id
   role_definition_name = "Azure Service Bus Data Receiver"
   scope                = var.service_bus_namespace_resource_id
@@ -53,6 +57,8 @@ resource "azuread_group_member" "reader_group_membership_entity_contributor_grou
 }
 
 resource "azurerm_role_assignment" "reader_group_service_bus_namespace_reader" {
+  provider = azurerm.servicebus
+
   principal_id         = azuread_group.reader_group.object_id
   role_definition_name = azurerm_role_definition.service_bus_namespace_reader.name
   scope                = var.service_bus_namespace_resource_id
@@ -62,6 +68,8 @@ resource "azurerm_role_assignment" "reader_group_service_bus_namespace_reader" {
 # SPN role assignments
 #############################################
 resource "azurerm_role_assignment" "spn_service_bus_namespace_manager" {
+  provider = azurerm.servicebus
+
   principal_id         = var.service_principal_object_id
   role_definition_name = var.service_bus_namespace_manager_group_name
   scope                = var.service_bus_namespace_resource_id
@@ -70,6 +78,9 @@ resource "azurerm_role_assignment" "spn_service_bus_namespace_manager" {
 
 module "spn_service_bus_namespace_conditional_uac" {
   source = "./modules/conditional_role_assignment"
+  providers = {
+    azurerm = azurerm.servicebus
+  }
 
   principal_object_id     = var.service_principal_object_id
   role_definition_name    = "User Access Administrator"
